@@ -202,8 +202,8 @@ class ProfileViewController: UIViewController {
         
     
         FeedcollectionView.snp.makeConstraints {
-            $0.top.equalTo(followButton.snp.bottom).offset(30)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(followButton.snp.bottom).offset(40)
+            $0.leading.trailing.bottom.equalToSuperview().offset(2)
         }
         FeedcollectionView.collectionViewLayout = createLayout()
         FeedcollectionView.register(ProfileViewCell.self, forCellWithReuseIdentifier: ProfileViewCell.identifier)
@@ -235,11 +235,11 @@ extension ProfileViewController: UICollectionViewDelegate {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         
-        layout.minimumLineSpacing = 4
-        layout.minimumInteritemSpacing = 4
-        
-        let width = (UIScreen.main.bounds.width - 10 * 4) / 3 - 2
-        layout.itemSize = CGSize(width: width, height: width)
+        let screenWidth = UIScreen.main.bounds.width
+           let cellWidth = (screenWidth - 2 * 2 ) / 3
+        layout.itemSize = CGSize(width: cellWidth, height: cellWidth)
+        layout.minimumLineSpacing = 2
+        layout.minimumInteritemSpacing = 2
         
         return layout
     }

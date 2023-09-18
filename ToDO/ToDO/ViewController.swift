@@ -13,7 +13,6 @@ import CoreData
 class ViewController: UIViewController {
     
     var container: NSPersistentContainer!
-    
     var ToDoView = UITableView()
     var items: [String] = []
     var selectedSection: TodoSection?

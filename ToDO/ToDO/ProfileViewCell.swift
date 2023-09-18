@@ -26,7 +26,7 @@ class ProfileViewCell: UICollectionViewCell {
         
         ProfileImageView.snp.makeConstraints{
             $0.width.height.equalTo(136)
-//            $0.height.equalTo(140)
+            $0.edges.equalToSuperview().inset(2)
         }
     }
     
