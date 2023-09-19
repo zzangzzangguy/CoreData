@@ -20,9 +20,9 @@
 		4E11123A2A97512D00D4E550 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1112392A97512D00D4E550 /* MainVC.swift */; };
 		4E11123C2A9C6D5300D4E550 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E11123B2A9C6D5300D4E550 /* UserDefaultsManager.swift */; };
 		4EDCF3A62AB9706F00BEE2AC /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EDCF3A52AB9706F00BEE2AC /* Media.xcassets */; };
-		4EDCF3AC2AB98ECB00BEE2AC /* Task+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EDCF3AA2AB98ECB00BEE2AC /* Task+CoreDataClass.swift */; };
-		4EDCF3AD2AB98ECB00BEE2AC /* Task+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EDCF3AB2AB98ECB00BEE2AC /* Task+CoreDataProperties.swift */; };
 		4EDCF3B12AB99C3400BEE2AC /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EDCF3B02AB99C3400BEE2AC /* CoreDataManager.swift */; };
+		4EDCF3B52AB9A5B500BEE2AC /* Task+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EDCF3B32AB9A5B500BEE2AC /* Task+CoreDataClass.swift */; };
+		4EDCF3B62AB9A5B500BEE2AC /* Task+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EDCF3B42AB9A5B500BEE2AC /* Task+CoreDataProperties.swift */; };
 		7FC428952AB8411900C5E97C /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC428942AB8411900C5E97C /* ProfileViewController.swift */; };
 		7FC428972AB8413A00C5E97C /* ProfileViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC428962AB8413A00C5E97C /* ProfileViewCell.swift */; };
 		7FC428992AB8414C00C5E97C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC428982AB8414C00C5E97C /* User.swift */; };
@@ -64,9 +64,9 @@
 		4E1112392A97512D00D4E550 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		4E11123B2A9C6D5300D4E550 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		4EDCF3A52AB9706F00BEE2AC /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		4EDCF3AA2AB98ECB00BEE2AC /* Task+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataClass.swift"; sourceTree = "<group>"; };
-		4EDCF3AB2AB98ECB00BEE2AC /* Task+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4EDCF3B02AB99C3400BEE2AC /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		4EDCF3B32AB9A5B500BEE2AC /* Task+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4EDCF3B42AB9A5B500BEE2AC /* Task+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7FC428942AB8411900C5E97C /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		7FC428962AB8413A00C5E97C /* ProfileViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewCell.swift; sourceTree = "<group>"; };
 		7FC428982AB8414C00C5E97C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -103,9 +103,9 @@
 		4E1111EE2A95F11000D4E550 = {
 			isa = PBXGroup;
 			children = (
+				4EDCF3B32AB9A5B500BEE2AC /* Task+CoreDataClass.swift */,
+				4EDCF3B42AB9A5B500BEE2AC /* Task+CoreDataProperties.swift */,
 				4E1111F92A95F11000D4E550 /* ToDO */,
-				4EDCF3AA2AB98ECB00BEE2AC /* Task+CoreDataClass.swift */,
-				4EDCF3AB2AB98ECB00BEE2AC /* Task+CoreDataProperties.swift */,
 				4E11123B2A9C6D5300D4E550 /* UserDefaultsManager.swift */,
 				7FC4289C2AB85CA300C5E97C /* Task.xcdatamodeld */,
 				4E1112392A97512D00D4E550 /* MainVC.swift */,
@@ -308,10 +308,9 @@
 			files = (
 				7FC428992AB8414C00C5E97C /* User.swift in Sources */,
 				7FC428972AB8413A00C5E97C /* ProfileViewCell.swift in Sources */,
-				4EDCF3AC2AB98ECB00BEE2AC /* Task+CoreDataClass.swift in Sources */,
+				4EDCF3B52AB9A5B500BEE2AC /* Task+CoreDataClass.swift in Sources */,
 				4EDCF3B12AB99C3400BEE2AC /* CoreDataManager.swift in Sources */,
 				4E1111FF2A95F11000D4E550 /* ViewController.swift in Sources */,
-				4EDCF3AD2AB98ECB00BEE2AC /* Task+CoreDataProperties.swift in Sources */,
 				7FC4289B2AB8416600C5E97C /* FeedData.swift in Sources */,
 				4E11123A2A97512D00D4E550 /* MainVC.swift in Sources */,
 				4E1111FB2A95F11000D4E550 /* AppDelegate.swift in Sources */,
@@ -320,6 +319,7 @@
 				4E1111FD2A95F11000D4E550 /* SceneDelegate.swift in Sources */,
 				4E1112352A97487300D4E550 /* TodoCell.swift in Sources */,
 				4E1112052A95F11000D4E550 /* ToDO.xcdatamodeld in Sources */,
+				4EDCF3B62AB9A5B500BEE2AC /* Task+CoreDataProperties.swift in Sources */,
 				7FC4289E2AB85CA300C5E97C /* Task.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

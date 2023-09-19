@@ -15,8 +15,9 @@ class CoreDataManager {
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     // Create
-    func createTask(title: String, isCompleted: Bool) {
+    func createTask(title: String, isCompleted: Bool, section: String) {
         let newTask = Task(context: context)
+        newTask.section = section
         newTask.id = UUID()
         newTask.title = title
         newTask.createDate = Date()

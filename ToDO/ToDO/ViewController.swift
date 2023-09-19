@@ -7,294 +7,133 @@
 
 //
 import UIKit
-import SnapKit
 import CoreData
 
 class ViewController: UIViewController {
+
+    // Core Data 관리를 위한 매니저 인스턴스
+    let coreDataManager = CoreDataManager.shared
     
-    var container: NSPersistentContainer!
-    var ToDoView = UITableView()
-    var items: [String] = []
-    var selectedSection: TodoSection?
+    // 할 일 목록 테이블 뷰
+    var tableView: UITableView!
     
-    let sections = ["운동","일","생활"]
+    // 섹션별 할 일 목록
+    var sectionedItems: [String: [Task]] = [:]
     
-    enum TodoSection: String, CaseIterable {
-        case exercsie = "운동"
-        case work = "일"
-        case life = "생활"
-    }
+    // 섹션 헤더 제목 배열
+    let sectionTitles = ["운동", "일", "생활"]
     
-    
-    // 메인 자료구조
-    var sectionedItems: [TodoSection: [String]] = [:]
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("### viewWillAppear called")
-        
-        
-        if let savedItems = UserDefaults.standard.array(forKey: "savedItems") as? [String] {
-            items = savedItems
-            sectionedItems = [:]
-            //             섹션 별로 할 일을 정리하여 sectionedItems 딕셔너리에 저장
-            for item in items {
-                let components = item.components(separatedBy: ":")
-                if components.count == 2,
-                   let sectionString = components.first,
-                   let section = TodoSection(rawValue: sectionString),
-                   let task = components.last {
-                    if var sectionItems = sectionedItems[section] {
-                        sectionItems.append(task)
-                        sectionedItems[section] = sectionItems
-                    } else {
-                        sectionedItems[section] = [task]
-                    }
-                }
-            }
-            
-            print("# 앱 다시 실행시 불러온다: \(items)")
-            view.addSubview(ToDoView)
-            ToDoView.reloadData()
-            print("나 \(ToDoView)호출 잘하고잇나")
-            
-        }
-    }
+    // 선택된 섹션
+    var selectedSection: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let pickerView = UIPickerView()
-        pickerView.delegate = self
-        pickerView.dataSource = self
+        // 할 일 목록을 표시할 테이블 뷰 생성
+        tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        view.addSubview(tableView)
         
-        let pickerToolbar = UIToolbar()
-        pickerToolbar.sizeToFit()
-        let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(pickerDoneButtonTapped))
-        pickerToolbar.setItems([doneButton], animated: false)
+        // Auto Layout 설정
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         
-        let textField = UITextField()
-        textField.inputView = pickerView
-        textField.inputAccessoryView = pickerToolbar
-        
-        view.addSubview(textField)
-        
-        
-        view.addSubview(ToDoView)
-        
-        self.ToDoView.register(TodoCell.self, forCellReuseIdentifier: "TodoCell")
-        autoLayout()
-        
-        
-        ToDoView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
-        }
-        
-        self.ToDoView.dataSource = self
-        self.ToDoView.delegate = self
-        
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addtask))
+        // 네비게이션 바에 추가 버튼 추가
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTask))
         navigationItem.rightBarButtonItem = addButton
     }
-    @objc func addtask() {
-        let alertController = UIAlertController(title: "메모 추가", message: nil, preferredStyle: .alert)
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        let pickerView = UIPickerView()
-        pickerView.delegate = self
-        pickerView.dataSource = self
+        // Core Data에서 데이터를 읽어와 sectionedItems에 업데이트
+        loadDataFromCoreData()
+    }
+    
+    // Core Data에서 데이터를 읽어와 sectionedItems에 업데이트하는 함수
+    private func loadDataFromCoreData() {
+        // Core Data에서 할 일 목록을 가져옴
+        let tasks = coreDataManager.fetchTasks()
         
-        alertController.addTextField { textfiled in
-            textfiled.placeholder = "감사합니두"
-            textfiled.inputView = pickerView
-            
+        // 섹션별로 할 일을 구분하여 sectionedItems에 저장
+        sectionedItems = Dictionary(grouping: tasks, by: { $0.section ?? "" })
+        
+        // 테이블 뷰 업데이트
+        tableView.reloadData()
+    }
+    
+    // 추가 버튼 눌렀을 때의 액션
+    @objc func addTask() {
+        let alertController = UIAlertController(title: "할 일 추가", message: nil, preferredStyle: .alert)
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "할 일 입력"
+        }
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "섹션 입력 (운동, 일, 생활 중 하나)"
         }
         
         let addAction = UIAlertAction(title: "추가", style: .default) { [weak self] _ in
-            if let textField = alertController.textFields?.first,
-               let newTask = textField.text,
-               //               !newTask.isEmpty,
-               let selectedSection = self?.selectedSection {
-                
-                let combineTask = "\(selectedSection.rawValue):\(newTask)"
-                self?.items.append(combineTask)
-                
-                
-                self?.items.append(newTask)
-                print("### :추가하고")
-                
-                
-                
-                if var sectionItems = self?.sectionedItems[selectedSection] {
-                    sectionItems.append(newTask)
-                    self?.sectionedItems[selectedSection] = sectionItems
-                } else {
-                    self?.sectionedItems[selectedSection] = [newTask]
-                }
-                
-                self?.ToDoView.reloadData()
-                
-                UserDefaults.standard.set(self?.items, forKey: "savedItems")
-                
-                
-                print("### input : \(selectedSection) \(newTask)")
-                
+            if let taskTitle = alertController.textFields?[0].text,
+               let sectionTitle = alertController.textFields?[1].text {
+                // Core Data에 할 일 추가
+                self?.coreDataManager.createTask(title: taskTitle, isCompleted: false, section: sectionTitle)
+                // 데이터를 다시 읽어와서 sectionedItems에 업데이트
+                self?.loadDataFromCoreData()
             }
         }
-        alertController.addAction(addAction)
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        alertController.addAction(addAction)
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true, completion: nil)
     }
-    
 }
 
-
-extension ViewController {
-    func getSection(section: Int) -> TodoSection {
-        if section == 0 {
-            return TodoSection.exercsie
-        } else if section == 1 {
-            return TodoSection.work
-        } else {
-            return TodoSection.life
-        }
-    }
-}
-
-extension ViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (action, view, completionHandler) in
-            
-            // 1. 실제 데이터를 삭제
-            guard let self = self else { return }
-            print("### delete row \(indexPath)")
-            
-            guard let todoSection = TodoSection(rawValue: self.sections[indexPath.section]),
-                  var sectionItems = self.sectionedItems[todoSection] else {
-                completionHandler(false)
-                return
-            }
-            
-            // 삭제할 할 일
-            let task = sectionItems[indexPath.row]
-            sectionItems.remove(at: indexPath.row)
-            self.sectionedItems[todoSection] = sectionItems
-            
-            // UI에서도 삭제
-            self.ToDoView.deleteRows(at: [indexPath], with: .fade)
-            // items 배열에서 삭제
-            if let index = self.items.firstIndex(of: task) {
-                self.items.remove(at: index)
-            }
-            if let sectionIndex = self.items.firstIndex(where: { $0.hasSuffix(":\(task)") }) {
-                           self.items.remove(at: sectionIndex)
-                       }
-            UserDefaults.standard.set(self.items, forKey: "savedItems")
-            completionHandler(true)
-        }
-            print("### row 삭제")
-
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-        return configuration
-    }
-    
-}
-
-
-extension ViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let todoSection = TodoSection(rawValue: sections[section]),
-              let items = sectionedItems[todoSection] else {
-            return nil
-        }
-        
-        if items.isEmpty {
-            return nil
-        }
-        
-        return sections[section]
-    }
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        
-        return sections.count
+        return sectionTitles.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let todoSection = TodoSection(rawValue: sections[section]),
-              let itemsInSection = sectionedItems[todoSection] else {
-            
-            return 0
-        }
-        print("###:\(itemsInSection)")
-        return itemsInSection.count
+        let sectionTitle = sectionTitles[section]
+        return sectionedItems[sectionTitle]?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitles[section]
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoCell", for: indexPath) as! TodoCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
-        guard let todoSection = TodoSection(rawValue: sections[indexPath.section]),
-              let itemsInSection = sectionedItems[todoSection] else {
-            return UITableViewCell()
+        let sectionTitle = sectionTitles[indexPath.section]
+        if let tasksInSection = sectionedItems[sectionTitle], tasksInSection.indices.contains(indexPath.row) {
+            let task = tasksInSection[indexPath.row]
+            cell.textLabel?.text = task.title
         }
-        
-        let item = itemsInSection[indexPath.row]
-        cell.TodoLabel.text = item
-        
-        let section = indexPath.section
-        
-        cell.cellSetting()
         
         return cell
     }
-}
-extension ViewController {
-    private func autoLayout() {
-        ToDoView.snp.makeConstraints {
-            $0.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-    }
-}
-extension ViewController: UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return sections[row]
-    }
     
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectedSection = TodoSection(rawValue: sections[row])
-    }
-}
-extension ViewController: UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return sections.count
-    }
-}
-extension ViewController {
-    @objc func pickerDoneButtonTapped() {
-        if let selectedSection = selectedSection {
-            switch selectedSection {
-            case .exercsie:
-                break
-            case .work:
-                break
-            case .life:
-                break
-            }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let sectionTitle = sectionTitles[indexPath.section]
+        if let tasksInSection = sectionedItems[sectionTitle], tasksInSection.indices.contains(indexPath.row) {
+            let task = tasksInSection[indexPath.row]
+            // 할 일을 선택한 경우의 동작 구현
+            // 예: 수정 또는 완료 처리
+            print("Selected task: \(task.title ?? "")")
         }
-        view.endEditing(true)
-    }
-}
-extension ViewController {
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        UserDefaults.standard.set(items, forKey: "savedItems")
-        print("### 앱이 종료될때! 저장")
     }
 }

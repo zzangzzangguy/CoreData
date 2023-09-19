@@ -21,6 +21,7 @@ extension Task {
     @NSManaged public var isCompleted: Bool
     @NSManaged public var modifyDate: Date?
     @NSManaged public var title: String?
+    @NSManaged public var section: String?
 
 }
 
