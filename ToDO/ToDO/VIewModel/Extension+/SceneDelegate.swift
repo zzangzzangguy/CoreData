@@ -34,8 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             selectedImage: nil
         )
         
-        let mainView = MainVC()
-        mainView.tabBarItem = UITabBarItem(
+        mainVC.tabBarItem = UITabBarItem(
             title: "메인",
             image: UIImage(systemName: "star.fill"),
             selectedImage: nil
