@@ -133,9 +133,6 @@
 				4EDCF3A52AB9706F00BEE2AC /* Media.xcassets */,
 				4E1111FE2A95F11000D4E550 /* ViewController.swift */,
 				4EDCF3B22AB99D1100BEE2AC /* Model */,
-				4E1112342A97487300D4E550 /* TodoCell.swift */,
-				7FC428982AB8414C00C5E97C /* User.swift */,
-				7FC4289A2AB8416600C5E97C /* FeedData.swift */,
 				7FC428942AB8411900C5E97C /* ProfileViewController.swift */,
 				7FC428962AB8413A00C5E97C /* ProfileViewCell.swift */,
 				4E1112082A95F11100D4E550 /* LaunchScreen.storyboard */,
@@ -165,6 +162,9 @@
 		4EDCF3B22AB99D1100BEE2AC /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				7FC4289A2AB8416600C5E97C /* FeedData.swift */,
+				4E1112342A97487300D4E550 /* TodoCell.swift */,
+				7FC428982AB8414C00C5E97C /* User.swift */,
 				4EDCF3B02AB99C3400BEE2AC /* CoreDataManager.swift */,
 			);
 			path = Model;

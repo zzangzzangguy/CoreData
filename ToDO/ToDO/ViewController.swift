@@ -8,28 +8,23 @@
 //
 import UIKit
 import CoreData
+import SnapKit
 
 class ViewController: UIViewController {
 
-    // Core Data 관리를 위한 매니저 인스턴스
     let coreDataManager = CoreDataManager.shared
     
-    // 할 일 목록 테이블 뷰
     var tableView: UITableView!
     
-    // 섹션별 할 일 목록
     var sectionedItems: [String: [Task]] = [:]
     
-    // 섹션 헤더 제목 배열
     let sectionTitles = ["운동", "일", "생활"]
     
-    // 선택된 섹션
     var selectedSection: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 할 일 목록을 표시할 테이블 뷰 생성
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -37,13 +32,14 @@ class ViewController: UIViewController {
         view.addSubview(tableView)
         
         // Auto Layout 설정
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            $0.leading.equalTo(view.snp.leading)
+            $0.trailing.equalTo(view.snp.trailing)
+            $0.bottom.equalTo(view.snp.bottom)
+
+        }
+    
         
         // 네비게이션 바에 추가 버튼 추가
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTask))
@@ -53,19 +49,14 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Core Data에서 데이터를 읽어와 sectionedItems에 업데이트
         loadDataFromCoreData()
     }
     
-    // Core Data에서 데이터를 읽어와 sectionedItems에 업데이트하는 함수
     private func loadDataFromCoreData() {
-        // Core Data에서 할 일 목록을 가져옴
         let tasks = coreDataManager.fetchTasks()
         
-        // 섹션별로 할 일을 구분하여 sectionedItems에 저장
         sectionedItems = Dictionary(grouping: tasks, by: { $0.section ?? "" })
         
-        // 테이블 뷰 업데이트
         tableView.reloadData()
     }
     
@@ -105,6 +96,40 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sectionTitles.count
     }
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let delete = UIContextualAction(style: .destructive, title: "삭제합니두") { [weak self] (action, view, completionHandler) in
+               guard let self = self else { return }
+               
+               let sectionTitle = self.sectionTitles[indexPath.section]
+               var itemsInSection = self.sectionedItems[sectionTitle] ?? []
+               
+               // 선택된 셀에 해당하는 할 일 객체를 가져옵니다.
+               if itemsInSection.indices.contains(indexPath.row) {
+                   let taskToDelete = itemsInSection[indexPath.row]
+                   
+                   // Core Data에서 데이터를 삭제합니다.
+                   self.coreDataManager.deleteTask(taskToDelete)
+                   
+                   // UI에서 셀을 삭제합니다.
+                   itemsInSection.remove(at: indexPath.row)
+                   
+                   // sectionedItems 딕셔너리를 업데이트합니다.
+                   self.sectionedItems[sectionTitle] = itemsInSection
+                   
+                   tableView.deleteRows(at: [indexPath], with: .fade)
+                   
+                   // completionHandler를 호출하여 스와이프 동작을 완료합니다.
+                   completionHandler(true)
+               } else {
+                   // 실패한 경우 completionHandler를 호출하여 스와이프 동작을 취소합니다.
+                   completionHandler(false)
+               }
+           }
+           
+           // 스와이프 동작 구성
+           let configuration = UISwipeActionsConfiguration(actions: [delete])
+           return configuration
+       }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionTitle = sectionTitles[section]
