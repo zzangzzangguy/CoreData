@@ -96,3 +96,10 @@ MVC와 MVVM은 다음과 같은 차이점이 있습니다.
 
 MVVM은 View와 ViewModel 간의 느슨한 결합을 통해 테스트 및 유지보수를 더 쉽게 만들 수 있습니다.
 
+### 디렉토리 구조 
+
+<img width="262" alt="스크린샷 2023-09-22 오후 7 49 41" src="https://github.com/zzangzzangguy/CoreData/assets/122965360/b598b0bc-799c-4133-b31d-1b7666476dcf">
+
+
+
+
