@@ -96,19 +96,3 @@ MVC와 MVVM은 다음과 같은 차이점이 있습니다.
 
 MVVM은 View와 ViewModel 간의 느슨한 결합을 통해 테스트 및 유지보수를 더 쉽게 만들 수 있습니다.
 
-## ViewController 구조 설명
-
-### `ProfileViewController`
-
-- **역할**: 사용자 프로필 정보를 표시하는 ViewController입니다.
-- **View**: SwiftUI로 작성된 `ProfileView`를 사용하여 사용자 이름과 나이를 표시합니다.
-- **ViewModel**: `ProfileViewModel`에 의해 관리되는 사용자 데이터와 바인딩되어 View를 업데이트합니다.
-
-### `<데이터 일관성> 구현 화면`
-
-- **역할**: 데이터 일관성 관련 화면을 나타내는 ViewController입니다.
-- **View**: 해당 화면에 표시되는 사용자 인터페이스 요소를 구성합니다.
-- **ViewModel**: 화면과 관련된 데이터를 제공하고 상호작용을 관리합니다.
-
-각 ViewController는 MVVM 아키텍처를 준수하며, View와 ViewModel 사이의 데이터 바인딩을 활용하여 사용자 인터페이스 업데이트와 비즈니스 로직을 분리하고 확장 가능한 코드를 작성합니다.
-
