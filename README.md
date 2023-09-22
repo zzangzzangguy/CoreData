@@ -6,6 +6,8 @@
 ## 코어데이터란 ?
 
 <img width="692" alt="Coredata 공문" src="https://github.com/zzangzzangguy/codingclub/assets/122965360/6458798b-9953-43f1-9942-ba86384e8c5e">
+
+
 이전에 진행한 과제에서는 데이터 저장방식을 Userdefaults 를 줄곧 사용했다
 CoreData 를 사용해보긴 했지만.. 이해하는과정에 있어 힘들어 놔두고 있던 네놈.. 오늘에서야 **박살** 내준다
 
